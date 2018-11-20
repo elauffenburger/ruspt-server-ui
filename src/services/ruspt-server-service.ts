@@ -9,16 +9,17 @@ export class ApiRusptServerService implements RusptServerService {
 
     public async submitCode(request: SubmitRusptCodeRequest): Promise<SubmitRusptCodeResponse> {
         try {
-            const response = await fetch(`${this.apiUrl}/submit`, {
+            const response = await fetch(`${this.apiUrl}/submit-code`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
+                body: JSON.stringify(request)
             });
 
             return (await response.json()) as SubmitRusptCodeResponse;
         } catch (e) {
-            console.error("Something went wrong while attempting to submit code to ruspt server: %O", e);
+            console.error('Something went wrong while attempting to submit code to ruspt server: %O', e);
 
             throw e;
         }
@@ -27,15 +28,15 @@ export class ApiRusptServerService implements RusptServerService {
 
 // tslint:disable-next-line:max-classes-per-file
 export class MockRusptServerService implements RusptServerService {
-    static FAKE_RESPONSES: SubmitRusptCodeResponse[] = [
+    private static FAKE_RESPONSES: SubmitRusptCodeResponse[] = [
         {
             success: true,
             output: `4`,
         },
         {
             success: false,
-            output: `Error: symbol defn undefined (this is totally made-up -- I don't know what it would say here!)`
-        }
+            output: `Error: symbol defn undefined (this is totally made-up -- I don't know what it would say here!)`,
+        },
     ];
 
     private requestCount = 0;

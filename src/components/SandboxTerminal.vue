@@ -72,6 +72,7 @@ export default class SandboxTerminal extends Vue {
 
 <style lang="scss" scoped>
 #output-terminal {
+  height: 100%;
   background-color: black;
   padding: 1rem;
 }

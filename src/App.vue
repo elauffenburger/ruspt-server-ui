@@ -26,7 +26,7 @@
 const MOCK_DATA_ENABLED = false;
 
 export default {
-  name: "App",
+  name: 'App',
   data: () => {
     return {
       hasMockedData: false
@@ -55,6 +55,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#app {
+  max-height: 100vh;
+}
+
 .navbar {
   background-color: black;
 

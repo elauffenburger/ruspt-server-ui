@@ -27,8 +27,12 @@ export default class SandboxEditor extends Vue {
   }
 
   createEditor() {
-    const editorEl = (<any>this.$refs).editor;
-    const monacoEditor: monaco.editor.IStandaloneCodeEditor = editorEl.getMonaco();
+    const editorComponent = (<any>this.$refs).editor;
+    const monacoEditor: monaco.editor.IStandaloneCodeEditor = editorComponent.getMonaco();
+    const editorEl = monacoEditor.getDomNode();
+
+    editorEl.style.height = "100%";
+    editorEl.style.width = "100%";
 
     this.enableVimBindings(monacoEditor);
     this.addKeyBindings(monacoEditor);

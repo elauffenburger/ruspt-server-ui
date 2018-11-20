@@ -1,16 +1,18 @@
 <template>
-    <div>
-        <b-message v-for="(history, i) of historyEntries" :key="i" class="history-entry" :closable="false" size="is-small" :title="getTitleForHistoryEntry(history)" :type="getTypeForHistoryEntry(history)">
-            <div class="history-info-group">
-                <span class="history-title">Input:</span>
-                <span class="history-code">{{history.input}}</span>
-            </div>
-            <div class="history-info-group">
-                <span class="history-title">Output:</span>
-                <span class="history-code">{{history.output}}</span>
-            </div>
-        </b-message>
+  <div>
+    <div v-for="(history, i) of historyEntries" :key="i" @click="onClickEntry(history)" class="history-entry">
+      <b-message :closable="false" size="is-small" :title="getTitleForHistoryEntry(history)" :type="getTypeForHistoryEntry(history)">
+        <div class="history-info-group">
+          <span class="history-title">Input:</span>
+          <span class="history-code">{{history.input}}</span>
+        </div>
+        <div class="history-info-group">
+          <span class="history-title">Output:</span>
+          <span class="history-code">{{history.output}}</span>
+        </div>
+      </b-message>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -24,11 +26,7 @@ import { HistoryEntry } from "../models";
 })
 export default class SandboxHistory extends Vue {
   get historyEntries(): HistoryEntry[] {
-    return this.$store.getters['sandbox/history'];
-  }
-
-  makeHistoryEntry(entry: HistoryEntry) {
-    this.historyEntries.push(entry);
+    return this.$store.getters["sandbox/historyStack"];
   }
 
   getTitleForHistoryEntry(entry: HistoryEntry) {
@@ -37,6 +35,12 @@ export default class SandboxHistory extends Vue {
 
   getTypeForHistoryEntry(entry: HistoryEntry) {
     return entry.success ? "is-success" : "is-danger";
+  }
+
+  onClickEntry(entry: HistoryEntry) {
+    console.log("entry clicked: %O", entry);
+
+    this.$emit("entry-clicked", entry);
   }
 }
 </script>

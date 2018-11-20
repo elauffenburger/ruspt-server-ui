@@ -2,16 +2,9 @@ import Vue from 'vue';
 import Vuex, { Action, StoreOptions, Store } from 'vuex';
 import { SubmitRusptCodeRequest, HistoryEntry, SubmitRusptCodeResponse } from './models';
 import { RusptServerService, ApiRusptServerService, MockRusptServerService } from './services/ruspt-server-service';
+import env from '@/env';
 
 Vue.use(Vuex);
-
-interface AppStoreServices {
-  rusptServerService: RusptServerService;
-}
-
-const SERVICES: AppStoreServices = {
-  rusptServerService: new MockRusptServerService(),
-};
 
 export interface AppState {
   sandbox: SandboxState;
@@ -21,6 +14,14 @@ export interface SandboxState {
   lastCodeSubmission: SubmitRusptCodeResponse | null;
   codeSubmissionHistory: HistoryEntry[];
 }
+
+interface AppStoreServices {
+  rusptServerService: RusptServerService;
+}
+
+const SERVICES: AppStoreServices = {
+  rusptServerService: new ApiRusptServerService(env.rusptServerAddress),
+};
 
 const store = new Store({
   modules: {
@@ -33,8 +34,15 @@ const store = new Store({
         };
       })(),
       getters: {
-        history: ({ codeSubmissionHistory }) => {
-          return codeSubmissionHistory;
+        historyStack: (state: SandboxState) => {
+          const history = state.codeSubmissionHistory;
+
+          // reduce right -> left to produce a stack
+          return history.reduceRight((acc, entry) => {
+            acc.push(entry);
+
+            return acc;
+          }, [] as HistoryEntry[]);
         },
       },
       mutations: {

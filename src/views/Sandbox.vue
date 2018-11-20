@@ -1,5 +1,5 @@
 <template>
-  <div class="columns">
+  <div class="sandbox columns">
 
     <div class="column is-one-fifth">
       <section class="section">
@@ -8,10 +8,10 @@
         </div>
       </section>
 
-      <SandboxHistory ref="history" />
+      <SandboxHistory class="history" ref="history" @entry-clicked="onHistoryEntryClicked($event)" />
     </div>
 
-    <div class="column is-one-third editor-container">
+    <div class="column is-two-thirds editor-container">
       <section class="section">
         <div class="container">
           <h2 class="subtitle">Editor</h2>
@@ -28,7 +28,7 @@
         </div>
       </section>
 
-      <SandboxTerminal ref="outputTerminal" />
+      <SandboxTerminal class="output-terminal" ref="outputTerminal" />
     </div>
 
   </div>
@@ -62,11 +62,16 @@ export default class Sandbox extends Vue {
   }
 
   onEditorCodeSubmitted(code: string) {
-    console.log('dispatching sandbox/submitCode');
-    this.$store.dispatch('sandbox/submitCode', code);
+    console.log("dispatching sandbox/submitCode");
+    this.$store.dispatch("sandbox/submitCode", code);
+  }
+
+  onHistoryEntryClicked(entry: HistoryEntry) {
+    this.editor.code = entry.input;
   }
 
   private bindReferences() {
+    this.editor = <any>this.$refs.editor;
     this.term = <any>this.$refs.outputTerminal;
     this.history = <any>this.$refs.history;
   }
@@ -74,6 +79,10 @@ export default class Sandbox extends Vue {
 </script>
 
 <style scoped lang="scss">
+.sandbox {
+  max-height: 80vh;
+}
+
 .section {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -81,6 +90,22 @@ export default class Sandbox extends Vue {
 }
 
 .editor {
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  overflow-y: scroll;
+}
+
+.output-terminal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 </style>

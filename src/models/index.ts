@@ -3,3 +3,12 @@ export interface HistoryEntry {
     input: string;
     output: string;
 }
+
+export interface SubmitRusptCodeRequest {
+    code: string;
+}
+
+export interface SubmitRusptCodeResponse {
+    success: boolean;
+    output: string;
+}

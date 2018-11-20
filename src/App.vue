@@ -8,7 +8,7 @@
         </a>
       </div>
 
-      <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-menu">
         <div class="navbar-start">
           <router-link class="navbar-item" to="/">Home</router-link>
           <router-link class="navbar-item" to="/about">About</router-link>
@@ -16,27 +16,59 @@
       </div>
     </nav>
 
-    <router-view />
+    <div class="container router-view-container">
+      <router-view />
+    </div>
   </div>
 </template>
 
-<style lang="scss" scoped>
-#nav {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
-}
+<script>
+const MOCK_DATA_ENABLED = false;
 
+export default {
+  name: "App",
+  data: () => {
+    return {
+      hasMockedData: false
+    };
+  },
+  mounted() {
+    if (MOCK_DATA_ENABLED && !this.hasMockedData) {
+      this.hasMockedData = true;
+
+      this.mockData();
+    }
+  },
+  methods: {
+    mockData() {
+      const FAKE_CODE_SUBMISSIONS = [
+        `(do (def x (+ 2 2)))`,
+        `(do (defn x (+ 2 2)))`
+      ];
+
+      for (const code of FAKE_CODE_SUBMISSIONS) {
+        this.$store.dispatch("sandbox/submitCode", code);
+      }
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
 .navbar {
   background-color: black;
 
   .navbar-item {
     color: #afe6f4;
+
+    img {
+      max-height: 3rem;
+    }
   }
 }
 
-.navbar-item {
-  img {
-    max-height: 3rem;
-  }
+.router-view-container {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 </style>

@@ -12,6 +12,9 @@ Vue.use(Buefy);
 // Bootstrap Monaco editor
 import './bootstrap-monaco';
 
+// Bootstrap xterm.js
+import './bootstrap-xterm';
+
 Vue.config.productionTip = false;
 
 new Vue({

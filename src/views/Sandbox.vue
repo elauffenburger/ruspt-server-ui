@@ -31,12 +31,14 @@
       <div id="vim-status"></div>
     </div>
 
-    <div class="column is-one-quarter">
+    <div class="column">
       <section class="section">
         <div class="container">
           <h2 class="subtitle">Output</h2>
         </div>
       </section>
+
+      <div id="output-terminal"></div>
     </div>
 
   </div>
@@ -50,6 +52,8 @@ import MonacoEditor from "vue-monaco";
 import { editor } from "monaco-editor";
 import { initVimMode } from "monaco-vim";
 
+import { Terminal } from "xterm";
+
 import { HistoryEntry } from "../models";
 
 @Component({
@@ -59,7 +63,9 @@ import { HistoryEntry } from "../models";
   }
 })
 export default class Sandbox extends Vue {
+  term: Terminal | null = null;
   code = "";
+
   historyEntries: HistoryEntry[] = [
     {
       success: true,
@@ -76,12 +82,33 @@ export default class Sandbox extends Vue {
   created() {}
 
   mounted() {
+    this.createEditor();
+    this.createOutputTerminal();
+  }
+
+  createEditor() {
     const editorEl = (<any>this.$refs).editor;
     const monacoEditor: editor.IStandaloneCodeEditor = editorEl.getMonaco();
 
     initVimMode(monacoEditor, <HTMLElement>(
       document.getElementById("vim-status")
     ));
+  }
+
+  createOutputTerminal() {
+    const term = new Terminal({
+      cursorBlink: true,
+      cursorStyle: 'block',
+      theme: {
+        foreground: 'green',
+        background: 'black'
+      }
+    });
+
+    term.open(<HTMLElement>document.getElementById("output-terminal"));
+    term.write("Welcome to ruspt!");
+
+    this.term = term;
   }
 
   getTitleForHistoryEntry(entry: HistoryEntry) {
@@ -96,7 +123,7 @@ export default class Sandbox extends Vue {
 
 <style scoped lang="scss">
 .section {
-  padding-top: .5rem;
+  padding-top: 0.5rem;
   padding-bottom: 1.5rem;
 }
 
@@ -128,5 +155,10 @@ export default class Sandbox extends Vue {
   #vim-status {
     flex: 1 1 5%;
   }
+}
+
+#output-terminal {
+  background-color: black;
+  padding: 1.0rem;
 }
 </style>

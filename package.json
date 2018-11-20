@@ -1,5 +1,5 @@
 {
-  "name": "ruspt-server",
+  "name": "rupst-server-ui",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,8 +8,12 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "buefy": "^0.7.1",
+    "monaco-languages": "^1.6.0",
+    "monaco-vim": "0.0.8",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",
+    "vue-monaco": "^0.2.0",
     "vue-property-decorator": "^7.0.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"

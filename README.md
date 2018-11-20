@@ -1,4 +1,4 @@
-# ruspt-server
+# rupst-server-ui
 
 ## Project setup
 ```

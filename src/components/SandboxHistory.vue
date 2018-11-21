@@ -17,9 +17,10 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
+import { Component, Prop } from "vue-property-decorator";
 
 import { HistoryEntry } from "../models";
+import { AppState } from '@/store';
 
 @Component({
   name: "SandboxHistory"
@@ -38,8 +39,6 @@ export default class SandboxHistory extends Vue {
   }
 
   onClickEntry(entry: HistoryEntry) {
-    console.log("entry clicked: %O", entry);
-
     this.$emit("entry-clicked", entry);
   }
 }

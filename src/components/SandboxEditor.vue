@@ -28,14 +28,38 @@ export default class SandboxEditor extends Vue {
 
   createEditor() {
     const editorComponent = (<any>this.$refs).editor;
+    const editorEl = editorComponent.$el as HTMLElement;
     const monacoEditor: monaco.editor.IStandaloneCodeEditor = editorComponent.getMonaco();
-    const editorEl = monacoEditor.getDomNode();
+    const monacoEl = monacoEditor.getDomNode();
 
-    editorEl.style.height = "100%";
-    editorEl.style.width = "100%";
-
+    this.fitEditorToContainer(monacoEditor, editorEl, monacoEl);
     this.enableVimBindings(monacoEditor);
     this.addKeyBindings(monacoEditor);
+  }
+
+  fitEditorToContainer(
+    editor: monaco.editor.IStandaloneCodeEditor,
+    editorEl: HTMLElement,
+    monacoEl: HTMLElement
+  ) {
+    editorEl.style.width = "100%";
+    editorEl.style.height = "100%";
+
+    // throw an event in the event queue so we'll grab the computed height after flexbox does its thing
+    const resize = () => {
+      editor.layout({
+        width: editorEl.offsetWidth,
+        height: editorEl.offsetHeight
+      });
+    };
+
+    setTimeout(() => {
+      resize();
+
+      setTimeout(() => {
+        resize();
+      });
+    });
   }
 
   enableVimBindings(editor: monaco.editor.IStandaloneCodeEditor) {
@@ -55,7 +79,7 @@ export default class SandboxEditor extends Vue {
 
   submitCode() {
     this.$emit("code-submitted", this.code);
-    this.code = '';
+    this.code = "";
   }
 }
 </script>

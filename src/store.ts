@@ -23,6 +23,9 @@ const SERVICES: AppStoreServices = {
   rusptServerService: new ApiRusptServerService(env.rusptServerAddress),
 };
 
+function saveHistory(history: HistoryEntry[]) {
+}
+
 const store = new Store({
   modules: {
     sandbox: {
@@ -51,6 +54,8 @@ const store = new Store({
         },
         newHistoryEntry(state, history: HistoryEntry) {
           state.codeSubmissionHistory.push(history);
+
+          saveHistory(state.codeSubmissionHistory);
         },
       },
       actions: {

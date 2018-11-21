@@ -35,6 +35,12 @@ export default class SandboxTerminal extends Vue {
     this.term = term;
 
     term.open(<HTMLElement>document.getElementById("output-terminal"));
+    term.fit();
+
+    window.addEventListener('resize', function() {
+      term.fit();
+    });
+
     this.write("Welcome to ruspt!");
   }
 

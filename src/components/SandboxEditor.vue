@@ -60,6 +60,10 @@ export default class SandboxEditor extends Vue {
         resize();
       });
     });
+
+    window.addEventListener('resize', function () {
+      resize();
+    });
   }
 
   enableVimBindings(editor: monaco.editor.IStandaloneCodeEditor) {

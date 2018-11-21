@@ -1,17 +1,18 @@
 <template>
   <div class="sandbox columns">
 
-    <div class="column is-one-fifth">
+    <div class="column is-one-fifth history-container">
       <section class="section">
-        <div class="container">
-          <h2 class="subtitle">History</h2>
+        <div class="container history-label-container">
+          <h2 class="subtitle history-label">History</h2>
+          <a class="button is-danger clear-history-btn" v-if="historyExists" @click="onClickClearHistory()">Clear History</a>
         </div>
       </section>
 
       <SandboxHistory class="history" ref="history" @entry-clicked="onHistoryEntryClicked($event)" />
     </div>
 
-    <div class="column is-two-thirds editor-container">
+    <div class="column is-half editor-container">
       <section class="section">
         <div class="container">
           <h2 class="subtitle">Editor</h2>
@@ -43,6 +44,8 @@ import { HistoryEntry } from "../models";
 import SandboxTerminal from "@/components/SandboxTerminal.vue";
 import SandboxHistory from "@/components/SandboxHistory.vue";
 import SandboxEditor from "@/components/SandboxEditor.vue";
+import { AppState } from '@/store';
+import { Store } from 'vuex';
 
 @Component({
   name: "Sandbox",
@@ -57,6 +60,16 @@ export default class Sandbox extends Vue {
   term: SandboxTerminal = <any>null;
   history: SandboxHistory = <any>null;
 
+  get historyExists(): boolean {
+    const history = this.store.state.sandbox.codeSubmissionHistory;
+
+    return history && history.length > 0;
+  }
+
+  get store(): Store<AppState> {
+    return this.$store as Store<AppState>;
+  }
+
   mounted() {
     this.bindReferences();
   }
@@ -69,6 +82,10 @@ export default class Sandbox extends Vue {
 
   onHistoryEntryClicked(entry: HistoryEntry) {
     this.editor.code = entry.input;
+  }
+
+  onClickClearHistory() {
+    this.$store.dispatch("sandbox/clearHistory");
   }
 
   private bindReferences() {
@@ -96,12 +113,29 @@ export default class Sandbox extends Vue {
   height: 100%;
 }
 
-.history {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+.history-container {
+  .history-label-container {
+    display: flex;
+    max-width: 100%;
 
-  overflow-y: scroll;
+    .history-label {
+      flex: 1 1 50%;
+      display: inline-block;
+    }
+
+    .clear-history-btn {
+      flex: 1 1 50%;
+      display: inline-block;
+    }
+  }
+
+  .history {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    overflow-y: auto;
+  }
 }
 
 .output-terminal {

@@ -1,22 +1,14 @@
 import Vue from 'vue';
-import { Logger } from 'winston';
-
-function findLogger(v: Vue): Logger | undefined {
-    const logger = v.$options.logger;
-    if (logger) {
-        return logger;
-    }
-
-    return v.$parent && v.$parent.$options.logger;
-}
 
 Vue.mixin({
     beforeCreate() {
-        const logger = findLogger(this);
-        if (!logger) {
-            return;
-        }
+        const options = this.$options;
 
-        this.$logger = logger;
+        // store injection
+        if (options.logger) {
+            this.$logger = options.logger;
+        } else if (options.parent && options.parent.$logger) {
+            this.$logger = options.parent.$logger;
+        }
     }
 });

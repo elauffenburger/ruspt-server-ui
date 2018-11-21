@@ -13,13 +13,25 @@ export interface SandboxModuleConfig {
     services: {
         logger: Logger,
         rusptServerService: RusptServerService
-    }
+    };
 }
 
 export const MUTATIONS = {
     NEW_CODE_SUBMISSION: 'newCodeSubmission',
-    NEW_HISTORY_ENTRY: 'newHistoryEntry'
-}
+    NEW_HISTORY_ENTRY: 'newHistoryEntry',
+    CLEAR_HISTORY: 'clearHistory'
+};
+
+export const ACTIONS = {
+    SUBMIT_CODE: 'submitCode',
+    CLEAR_HISTORY: 'clearHistory'
+};
+
+export const GETTERS = {
+    HISTORY_STACK: 'historyStack'
+};
+
+const HISTORY_STORAGE_KEY = '_history';
 
 export function makeModule(config: SandboxModuleConfig): Module<SandboxState, AppState> {
     const { services } = config;
@@ -29,10 +41,10 @@ export function makeModule(config: SandboxModuleConfig): Module<SandboxState, Ap
         namespaced: true,
         state: {
             lastCodeSubmission: null,
-            codeSubmissionHistory: [],
+            codeSubmissionHistory: loadSavedHistory(),
         },
         getters: {
-            historyStack: state => {
+            [GETTERS.HISTORY_STACK]: state => {
                 const history = state.codeSubmissionHistory;
 
                 // reduce right -> left to produce a stack
@@ -52,9 +64,14 @@ export function makeModule(config: SandboxModuleConfig): Module<SandboxState, Ap
 
                 saveHistory(state.codeSubmissionHistory);
             },
+            [MUTATIONS.CLEAR_HISTORY](state) {
+                state.codeSubmissionHistory = [];
+
+                saveHistory([]);
+            }
         },
         actions: {
-            async submitCode({ commit }, code: string) {
+            async [ACTIONS.SUBMIT_CODE]({ commit }, code: string) {
                 logger.log('[submitCode]: received request: %O', code);
 
                 const request: SubmitRusptCodeRequest = { code };
@@ -70,10 +87,17 @@ export function makeModule(config: SandboxModuleConfig): Module<SandboxState, Ap
 
                 commit(MUTATIONS.NEW_HISTORY_ENTRY, history);
             },
+            [ACTIONS.CLEAR_HISTORY]({ commit }) {
+                commit(MUTATIONS.CLEAR_HISTORY);
+            },
         },
     };
 
     function saveHistory(history: HistoryEntry[]) {
+        localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+    }
 
+    function loadSavedHistory(): HistoryEntry[] {
+        return JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY) || '[]');
     }
 }

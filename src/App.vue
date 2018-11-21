@@ -16,7 +16,7 @@
       </div>
     </nav>
 
-    <div class="container router-view-container">
+    <div class="router-view-container">
       <router-view />
     </div>
   </div>

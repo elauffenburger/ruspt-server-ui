@@ -11,14 +11,14 @@ import 'buefy/dist/buefy.min.css';
 Vue.use(Buefy);
 
 // Bootstrap Monaco editor
-import bootstrapMonaco from './bootstrap-monaco';
+import bootstrapMonaco from './bootstrapping/bootstrap-monaco';
 bootstrapMonaco(services.logger);
 
 // Bootstrap xterm.js
-import './bootstrap-xterm';
+import './bootstrapping/bootstrap-xterm';
 
 // Bootstrap logging
-import './bootstrap-logging';
+import './bootstrapping/bootstrap-logging';
 import { loggers } from 'winston';
 
 Vue.config.productionTip = false;

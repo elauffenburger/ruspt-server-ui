@@ -62,7 +62,8 @@ export default class Sandbox extends Vue {
   }
 
   onEditorCodeSubmitted(code: string) {
-    console.log("dispatching sandbox/submitCode");
+    this.$logger.debug("dispatching sandbox/submitCode");
+
     this.$store.dispatch("sandbox/submitCode", code);
   }
 

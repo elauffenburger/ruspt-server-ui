@@ -1,11 +1,12 @@
 import { SubmitRusptCodeResponse, SubmitRusptCodeRequest, HistoryEntry } from '@/models';
+import { Logger } from 'winston';
 
 export interface RusptServerService {
     submitCode(request: SubmitRusptCodeRequest): Promise<SubmitRusptCodeResponse>;
 }
 
 export class ApiRusptServerService implements RusptServerService {
-    constructor(private apiUrl: string) { }
+    constructor(private apiUrl: string, private logger: Logger) { }
 
     public async submitCode(request: SubmitRusptCodeRequest): Promise<SubmitRusptCodeResponse> {
         try {
@@ -19,7 +20,7 @@ export class ApiRusptServerService implements RusptServerService {
 
             return (await response.json()) as SubmitRusptCodeResponse;
         } catch (e) {
-            console.error('Something went wrong while attempting to submit code to ruspt server: %O', e);
+            this.logger.error('Something went wrong while attempting to submit code to ruspt server: %O', e);
 
             throw e;
         }
@@ -41,8 +42,10 @@ export class MockRusptServerService implements RusptServerService {
 
     private requestCount = 0;
 
+    constructor(private logger: Logger) { }
+
     public submitCode(request: SubmitRusptCodeRequest): Promise<SubmitRusptCodeResponse> {
-        console.log('Received request: %O', request);
+        this.logger.info('Received request: %O', request);
 
         const responses = MockRusptServerService.FAKE_RESPONSES;
 

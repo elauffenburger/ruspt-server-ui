@@ -9,7 +9,7 @@ import Component from "vue-class-component";
 import { Terminal } from "xterm";
 
 import { SubmitRusptCodeResponse } from "@/models";
-import { SandboxState, AppState } from "@/store";
+import { AppState } from "@/store";
 
 const PROMPT_CHAR = ">";
 
@@ -40,8 +40,6 @@ export default class SandboxTerminal extends Vue {
 
   subscribeToStore() {
     this.$store.subscribe((mutation, state: AppState) => {
-      console.log("received mutation: %O | state: %O", mutation, state);
-
       const { type } = mutation;
 
       if (type != "sandbox/newCodeSubmission") {
@@ -50,7 +48,7 @@ export default class SandboxTerminal extends Vue {
 
       const codeSubmissionResponse = state.sandbox.lastCodeSubmission;
       if (!codeSubmissionResponse) {
-        console.log("code submission result was null!");
+        this.$logger.warn("code submission result was null!");
 
         return;
       }

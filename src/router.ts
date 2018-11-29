@@ -15,7 +15,7 @@ export default new Router({
     },
     {
       path: '/sandbox',
-      name: 'sanbox',
+      name: 'sandbox',
       component: Sandbox,
     },
     {
